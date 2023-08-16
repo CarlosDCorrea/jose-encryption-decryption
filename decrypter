@@ -1,0 +1,55 @@
+/**
+* Importacion de los modulos necesarios
+*/
+const { JWE, JWK } = require('node-jose');
+
+decrypt = async (cipherData) => {
+    privKey = `-----BEGIN PRIVATE KEY-----
+    MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC84luMHztqYyXS
+    07whwrV6wsjd4HKsaTBKJxNYsSqNsUPD0D6syHjtkApkQNROpno0VzeDf+LjLLdW
+    yAyexCjWSmyCvRLFro75Q6vVMYVg0IwQN5x0/a5zkNJOJEGQykB3+Mn6MB74M/Bq
+    WkW+Itu9VsV6ky4dwpJd+NRJ9iRVajGx24Yx1Mp8l5q9GcHlXh+NDnF0XW81qiqY
+    nw1Cnzz9GZgOLgrC8PzRZ0bMv4ePX20fhtWThcby1VRhpSRGtVMECcAxFWCkredl
+    XYZr5ofEJKKhCjKMIs96tAhvjSA/4CYvvK6vI+xNlXOoakGY1ohFobsTGyqie9l3
+    8cfNDSPzAgMBAAECggEAXdyCL6xpgyGH7y9mosQ2GK3o0VEyyvhulbq7Q2yuv8Ch
+    8xFtw8DPTwYwE8efeQIDYjUhEgif/9H9vXMlylOiE3LiX0mDpZZr1/RH1GaKaCTa
+    JUjtR7m0UhtaVphvuHq49KU+AUSebyqoQsFfPO/nkDwpYBL5bLJ+t5HqNGLLhWGm
+    P0tL0ZYtjoFajPXDYyOH2i6FVWhyXPoyIYtuipQiOl9moXPQJ0cmCc+IVWbyw8fK
+    DKL16Mz7O6UvDIOJAlmkuYzbyf7uiPFKlPRFiaQw52SWMOoaUmhlo+QwzK8flaC+
+    /w1s7DHFVOFRuOuTn6q67m4vlaycfVRHY2f2lEVlWQKBgQD+IqFtKAGDqH5/rIyL
+    96R63SBCL0zMwjTXLf5/H5a54fQMOBCKS1c0XV38fa85Gs0GNYuFXmukhKefpbDt
+    K3ekNm5OaNuRPhnaCaTC9lAsaYx0Qxz2Jq80kHkJWsBesXeR/2vmkn8C/M3qnoTl
+    1eTiT9q8oF1Hl5FoIPVtkv0HzQKBgQC+RSizfpqpo+WYEDYMXKX92IMqLzjF8FZO
+    fWjsm1wcxW+yRMJcIl1U5Kb9qNS0h2bc4mFbWxX/3qd+l4ndDg+uapzTRZtBW8dx
+    AbW1rh+t5w3D16XJul2CHrfBnIYJ+J6z7pCwhFphOcYbl400PmbOvX5gYtB76xjw
+    6/WVoN+avwKBgHr4huQq15C9l3hwJhIUYqKRHWrpOGBcGPWGa/9XabfIfi7rchV5
+    H1lXVIM4zfDz5wF6J2kBp1SUXAgERPh+cAYl0Hpggt5lDl1TDUbJqUHUUQJw9zKk
+    xWLKBcdhAnTPquwajDul54+qhHli+yu7tGVN/qoHbxuVW+bnC9tZpNaBAoGABqm3
+    VinN0rj5lkyjB+XKrkwBs915eH0FGLSNkxORszQ6yBxeTgmqCQoEywc5g6TmNj/7
+    Ns7Gw3IRnX5DBqmyZOI44bEjUbOcFVoA+f7B/z4DHmOT26+aDK90seQAUaMSM6zc
+    BkJsQ9FZHag9+qFgykaagVeUg3JlKjKpI/dBPVMCgYEA5GMtSv+n3uE3VDPLJf9f
+    n7erWS3Usrk3n4Mx33EEDT4ohCH/ptIwmJQW/eAlSjjHTl4t8oBbtiXipTo13Q4v
+    nbddW0seayTEhSo4iNSqAC+pw8YKAGKmfOELQyYinAdFRaHBB8evQzTTWvnAun8t
+    NxJ7UdhE5IyplCbtqJkii30=
+    -----END PRIVATE KEY-----`
+    /**
+    * Llave privada en formato JWK, pareja de la llave pública enviada en la petición dentro del Header protegido (app-key)
+    */
+    //const key = { "kty": "RSA", "n": "u_njSCDH9jUP_MHNgzqBGQrChlY1kTkIbXKlc_FKCOfnvfPQ9PxvH5rLcSnziinEjaiioiWf2FILRg4zoY7cBnPjsJnlmMAE-107-Xvz_Hv0oG5mkZbKm8zK0u_Qw54KY0Omgc9PGdcHC7N90vahDQVUDd3TW2JqzqN2zKqXAg31kWQ0c42zkhteGdihFE6s-RxKcVduusZ1th3okVeCMb_PnlH9S8NrwwXeNQak6aBH_4xOlVZW2AmQ9j0F-FbLZwGUANfO1tGNMEo2CkO6RzLe8hhP3wXJegIYnsTrefrrFbUnV3bU9XZIJj77Ro1lnELLekACscc6iNXpbE8PEQ", "e": "AQAB", "alg": "RS256", "use": "enc" };
+
+    let keyStore = await JWK.asKey(privKey, 'pem');
+
+    /**
+    * descifrado de la respuesta
+    */
+    JWE.createDecrypt(keyStore)
+        .decrypt(cipherData)
+        .then(function (result) {
+            console.log(JSON.parse(result.plaintext.toString()));
+            //console.log(result.header)
+        })
+
+}
+
+let data = "your data to decrypt";
+decrypt(data);
